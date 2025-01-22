@@ -28,6 +28,9 @@ Pastikan Anda telah menginstal Node.js dan npm di sistem Anda.
 4. **Buka aplikasi di browser:**
     Buka browser Anda dan navigasikan ke `http://localhost:3000` (atau port lain yang ditentukan oleh Vite).
 
+## Link Project
+[Klik link berikut](https://restaurant-fachris.netlify.app/)
+
 ## Skrip NPM
 - `npm run dev`: Menjalankan proyek dalam mode pengembangan.
 - `npm run build`: Membangun proyek untuk produksi.
