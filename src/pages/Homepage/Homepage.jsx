@@ -1,51 +1,83 @@
 import { useEffect, useState } from "react";
 import Card from "../../components/Card/Card";
-import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 
 const Homepage = () => {
-  // const [restaurantsData, setRestaurantsData] = useState([]);
-  // const [loading, setLoading] = useState(false);
-  // const [error, setError] = useState(null);
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     setLoading(true);
-  //     try {
-  //       let config = {
-  //         method: "get",
-  //         maxBodyLength: Infinity,
-  //         url: "https://678e0643a64c82aeb11eae21.mockapi.io/api/v1/restaurants",
-  //         headers: {},
-  //       };
-  //       const response = await axios.request(config);
-  //       setRestaurantsData(response.data);
-  //     } catch (error) {
-  //       setError(error.message);
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   };
-  //   fetchData();
-  //   console.log(restaurantsData);
+  const [limit] = useState(8);
+  const [page, setPage] = useState(1);
+  const [restaurantsData, setRestaurantsData] = useState([]);
+  const [openStatus, setOpenStatus] = useState(false);
+  const [priceRange, setPriceRange] = useState(null);
+  const [cuisineCategories, setCuisineCategories] = useState(null);
+  const [DisplayedRestaurants, setDisplayedRestaurants] = useState([]);
 
-  // }, []);
-
-  const { isLoading, error, data } = useQuery({
-    queryKey: ["restaurants"],
+  const { isLoading, data } = useQuery({
+    queryKey: ["restaurants", { limit, page }],
     queryFn: async () => {
       const response = await fetch(
-        "https://678e0643a64c82aeb11eae21.mockapi.io/api/v1/restaurants"
+        `https://678e0643a64c82aeb11eae21.mockapi.io/api/v1/restaurants?limit=${limit}&page=${page}`
       );
       if (!response.ok) {
         throw new Error("Fetching data error");
       }
       return response.json();
     },
+    keepPreviousData: true,
   });
 
-  console.log(isLoading);
-  console.log(data);
+  // paginated data
+  useEffect(() => {
+    if (data) {
+      setRestaurantsData((prevData) => {
+        const newData = [...prevData];
+        data.forEach((newItem) => {
+          if (!newData.some((existing) => existing.id === newItem.id)) {
+            newData.push(newItem);
+          }
+        });
+        return newData;
+      });
+    }
+  }, [data]);
+
+  console.log(openStatus);
+  console.log(restaurantsData);
+
+  // Filtered Data
+  useEffect(() => {
+    let filteredData = [...restaurantsData];
+    if (openStatus) {
+      filteredData = filteredData.filter((item) => item.is_open === true);
+    }
+
+    if (priceRange) {
+      filteredData = filteredData.filter(
+        (item) => Number(item.price) <= Number(priceRange)
+      );
+    }
+
+    if (cuisineCategories) {
+      filteredData = filteredData.filter((item) =>
+        item.cuisine_categories
+          .toLowerCase()
+          .includes(cuisineCategories.toLowerCase())
+      );
+    }
+
+    setDisplayedRestaurants(filteredData);
+  }, [restaurantsData, openStatus, priceRange, cuisineCategories]);
+
+  // check if last page
+  const isLastPage = data?.length < limit;
+
+  // handle reset filter
+  const handleResetFilter = () => {
+    setOpenStatus(false);
+    setPriceRange(null);
+    setCuisineCategories(null);
+  };
+  console.log(cuisineCategories);
 
   return (
     <div className="flex flex-col p-5">
@@ -61,23 +93,36 @@ const Homepage = () => {
       <div className="mt-5 border-t border-b p-2 flex flex-row align-middle items-center justify-start gap-3">
         <p>Filter by: </p>
         <div className="flex flex-row w-[40%] justify-between">
-          <div className="border-b">
-            <input type="radio" name="open_now" id="open_now" />
+          <div className="flex items-center border-b">
+            <input
+              type="checkbox"
+              name="open_now"
+              id="open_now"
+              checked={openStatus}
+              onChange={() => setOpenStatus(!openStatus)}
+            />
             <label htmlFor="open_now" id="open_now" className="ml-1">
               Open Now
             </label>
           </div>
 
           <div className="border-b">
-            <select name="price" id="price" defaultValue={"price"}>
+            <select
+              name="price"
+              id="price"
+              value={priceRange || "price"}
+              onChange={(e) => setPriceRange(e.target.value)}
+            >
               <option value="price" disabled>
                 Price Range
               </option>
-              <option value="">$100</option>
-              <option value="">$200</option>
-              <option value="">$300</option>
-              <option value="">$400</option>
-              <option value="">$500</option>
+              <option value="300">$300</option>
+              <option value="400">$400</option>
+              <option value="500">$500</option>
+              <option value="600">$600</option>
+              <option value="700">$700</option>
+              <option value="800">$800</option>
+              <option value="900">$900</option>
             </select>
           </div>
 
@@ -85,7 +130,8 @@ const Homepage = () => {
             <select
               name="categories"
               id="categories"
-              defaultValue={"categories"}
+              value={cuisineCategories || "categories"}
+              onChange={(e) => setCuisineCategories(e.target.value)}
             >
               <option value="categories" disabled>
                 Categories
@@ -104,7 +150,10 @@ const Homepage = () => {
           </div>
         </div>
         <div className="w-[52%] flex justify-end">
-          <button className="w-[100px] border p-1 hover:bg-slate-500 hover:text-white rounded-sm">
+          <button
+            className="w-[100px] border p-1 hover:bg-slate-500 hover:text-white rounded-sm"
+            onClick={() => handleResetFilter()}
+          >
             Clear All
           </button>
         </div>
@@ -137,7 +186,7 @@ const Homepage = () => {
           </div>
         ) : (
           <div className="grid grid-cols-4 grid-flow-row-dense gap-5 gap-y-7 px-5 justify-items-center">
-            {data?.map((restaurant) => {
+            {DisplayedRestaurants?.map((restaurant) => {
               return (
                 <Card
                   key={restaurant.id}
@@ -147,6 +196,7 @@ const Homepage = () => {
                   price={restaurant?.price}
                   isOpen={restaurant?.is_open}
                   restaurantRating={restaurant?.restaurant_rating}
+                  restaurant_id={restaurant?.id}
                 />
               );
             })}
@@ -155,9 +205,14 @@ const Homepage = () => {
       </div>
 
       <div className="flex justify-center">
-        <Button className="bg-white text-blue-950 border border-blue-950 rounded-md uppercase p-1 w-1/4 hover:bg-blue-950 hover:text-white">
-          Load More
-        </Button>
+        {!isLastPage && (
+          <Button
+            className="bg-white text-blue-950 border border-blue-950 rounded-md uppercase p-1 w-1/4 hover:bg-blue-950 hover:text-white"
+            onClick={() => setPage((prevData) => prevData + 1)}
+          >
+            Load More
+          </Button>
+        )}
       </div>
     </div>
   );

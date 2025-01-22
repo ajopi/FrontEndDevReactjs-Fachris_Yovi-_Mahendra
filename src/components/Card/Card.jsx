@@ -10,12 +10,10 @@ const Card = ({
   price,
   isOpen,
   restaurantRating,
+  restaurant_id,
 }) => {
   const navigate = useNavigate();
 
-  const handleNavigate = () => {
-    navigate("/detail-restaurant");
-  };
   return (
     <div className="flex flex-col gap-2 shadow-md w-[250px] ">
       <img src={restaurantImage[0] || food} alt="cuisine" className="" />
@@ -34,7 +32,7 @@ const Card = ({
       </div>
       <div className="flex flex-row justify-between text-gray-500">
         <span className="text-xs">
-          {restaurantCategories || "Categories"} - {price || "$"}
+          {restaurantCategories || "Categories"} - {"$" + price || "$"}
         </span>
         <span className="flex items-center text-xs">
           <GoDotFill
@@ -45,7 +43,7 @@ const Card = ({
       </div>
       <button
         className="bg-blue-950 text-white p-1 hover:bg-blue-800"
-        onClick={() => handleNavigate()}
+        onClick={() => navigate(`/detail-restaurant/${restaurant_id}`)}
       >
         Learn More
       </button>

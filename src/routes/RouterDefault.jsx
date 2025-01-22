@@ -8,7 +8,10 @@ const RouterDefault = () => {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Homepage />} />
-        <Route path="/detail-restaurant" element={<DetailRestaurant />} />
+        <Route path="/detail-restaurant" element={<DetailRestaurant />}>
+          <Route path=":id" element={<DetailRestaurant />} />
+        </Route>
+
         <Route path="*" element={<NoMatch />} />
       </Routes>
     </BrowserRouter>
