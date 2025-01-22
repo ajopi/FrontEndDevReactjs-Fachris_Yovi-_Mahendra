@@ -1,8 +1,34 @@
-# React + Vite
+# FrontEndDevReactjs-Fachris_Yovi_Mahendra
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Versi
+- **React.js**: 18.3.1
+- **Node.js**: 22.10.7
 
-Currently, two official plugins are available:
+## Prasyarat
+Pastikan Anda telah menginstal Node.js dan npm di sistem Anda.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Cara Memulai Proyek
+
+1. **Clone repositori ini:**
+    ```bash
+    git clone FrontEndDevReactjs-Fachris_Yovi_Mahendra
+    cd FrontEndDevReactjs-Fachris_Yovi_Mahendra
+    ```
+
+2. **Instal dependensi:**
+    ```bash
+    npm install
+    ```
+
+3. **Jalankan proyek:**
+    ```bash
+    npm run dev
+    ```
+
+4. **Buka aplikasi di browser:**
+    Buka browser Anda dan navigasikan ke `http://localhost:3000` (atau port lain yang ditentukan oleh Vite).
+
+## Skrip NPM
+- `npm run dev`: Menjalankan proyek dalam mode pengembangan.
+- `npm run build`: Membangun proyek untuk produksi.
+- `npm run lint`: Menjalankan ESLint untuk memeriksa kesalahan dalam kode.
