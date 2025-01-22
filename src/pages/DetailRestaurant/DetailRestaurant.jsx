@@ -33,7 +33,6 @@ const DetailRestaurant = () => {
     },
   });
 
-  console.log(data?.restaurant_image);
   return (
     <div className="grid grid-cols-2 p-5 gap-5">
       {isLoading ? (

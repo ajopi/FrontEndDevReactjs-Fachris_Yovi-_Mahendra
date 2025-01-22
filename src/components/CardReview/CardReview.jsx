@@ -1,10 +1,10 @@
 import { Card } from "@/components/ui/card";
 import food from "../../assets/food.jpg";
 import { FaStar } from "react-icons/fa6";
+import PropTypes from 'prop-types';
 
 const CardReview = ({
   customerName,
-  dataReview,
   productReview,
   textReview,
   personalRating,
@@ -20,7 +20,6 @@ const CardReview = ({
     ).padStart(2, "0")}:${String(date.getMinutes()).padStart(2, "0")}`;
     return formattedDate;
   };
-  console.log(dataReview);
   return (
     <Card className="flex flex-col p-2 mb-5 w-[300px]">
       <div className="flex justify-center">
@@ -56,6 +55,15 @@ const CardReview = ({
       </span>
     </Card>
   );
+};
+CardReview.propTypes = {
+  customerName: PropTypes.string,
+  dataReview: PropTypes.object,
+  productReview: PropTypes.string,
+  textReview: PropTypes.string,
+  personalRating: PropTypes.number,
+  dateReview: PropTypes.string,
+  foodImg: PropTypes.string,
 };
 
 export default CardReview;
